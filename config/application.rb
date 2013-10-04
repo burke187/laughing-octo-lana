@@ -3,6 +3,7 @@ require 'sqlite3'
 require 'active_record'
 require 'logger'
 
+
 APP_ROOT = Pathname.new(File.expand_path(File.join(File.dirname(__FILE__), '..')))
 
 APP_NAME = APP_ROOT.basename.to_s
