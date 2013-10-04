@@ -40,6 +40,19 @@ task "console" do
   exec "irb -r./config/application"
 end
 
+desc 'reload the DB'
+task 'db:recreate' do
+  rm_f DB_PATH
+  touch DB_PATH
+  ActiveRecord::Migrator.migrations_paths << File.dirname(__FILE__) + 'db/migrate'
+  ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
+  ActiveRecord::Migrator.migrate(ActiveRecord::Migrator.migrations_paths, ENV["VERSION"] ? ENV["VERSION"].to_i : nil) do |migration|
+    ENV["SCOPE"].blank? || (ENV["SCOPE"] == migration.scope)
+  end
+  require APP_ROOT.join('db', 'seeds.rb')
+end
+
+
 desc "Run the specs"
 RSpec::Core::RakeTask.new(:spec)
 
